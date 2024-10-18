@@ -90,9 +90,7 @@ class StepwiseInternalization:
 
     if self.removal_schedule(global_step) > self.removal_schedule(global_step - 1):
      self.optimizer = optim.AdamW(self.model.parameters(), lr=self.optimizer.param_groups[0]['lr'])
-
     global_step += 1
-
    print(f"Epoch {epoch+1} average loss: {epoch_loss / len(dataloader)}")
 
    # Evaluate on validation set
@@ -157,22 +155,19 @@ def load_gsm8k_dataset() -> Tuple[List[str], List[str], List[str]]:
  return problems, solutions, cot_steps
 
 def main() -> None:
- # Load larger model
+
  model_name: str = 'gpt2-medium'  # or 'gpt2-large' for even better performance
  tokenizer: GPT2Tokenizer = GPT2Tokenizer.from_pretrained(model_name)
  model: GPT2LMHeadModel = GPT2LMHeadModel.from_pretrained(model_name).cuda()
 
- # Prepare datasets
  datasets: Dict[str, Tuple[List[str], List[str], List[str]]] = {}
  for size in [4, 5, 7, 9]:
   problems, solutions, cot_steps = create_multiplication_dataset(size, 808000 // 4)  # 808k total examples
   datasets[f'{size}x{size}'] = (problems, solutions, cot_steps)
 
- # Add GSM8K dataset
  gsm8k_problems, gsm8k_solutions, gsm8k_cot_steps = load_gsm8k_dataset()
  datasets['gsm8k'] = (gsm8k_problems, gsm8k_solutions, gsm8k_cot_steps)
 
- # Create dataloaders
  dataloaders: Dict[str, Dict[str, DataLoader]] = {}
  for name, (problems, solutions, cot_steps) in datasets.items():
   dataset: CoTDataset = CoTDataset(problems, solutions, cot_steps, tokenizer)
@@ -206,7 +201,6 @@ def main() -> None:
     accuracy: float = trainer.evaluate(eval_loaders['val'])
     print(f"Accuracy on {eval_name} dataset: {accuracy}")
 
-  # Inference example
   if name.endswith('x'):
    size: int = int(name.split('x')[0])
    a: int = random.randint(10**(size-1), 10**size - 1)
