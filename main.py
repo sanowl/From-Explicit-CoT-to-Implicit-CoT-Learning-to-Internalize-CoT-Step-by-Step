@@ -80,7 +80,7 @@ class StepwiseInternalization:
   return loss.item()
 
  def train(self, dataloader: DataLoader, val_dataloader: DataLoader, num_epochs: int) -> None:
-  self.model.train()
+  self.model.train()    
   global_step: int = 0
   for epoch in range(num_epochs):
    epoch_loss: float = 0.0
