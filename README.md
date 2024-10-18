@@ -6,8 +6,7 @@ This project implements a training pipeline for language models using the Chain-
 
 ## Research Foundation
 
-This implementation is based on the paper "Stepwise Internalization of Chain-of-Thought Reasoning" by Wang et al. 
-Reference: [https://arxiv.org/pdf/2405.14838](https://arxiv.org/pdf/2405.14838)
+This implementation is based on the paper: [https://arxiv.org/pdf/2405.14838](https://arxiv.org/pdf/2405.14838)
 
 ## Key Components
 
