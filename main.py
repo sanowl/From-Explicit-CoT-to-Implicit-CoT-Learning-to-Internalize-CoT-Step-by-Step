@@ -6,9 +6,9 @@ from torch.utils.data import Dataset, DataLoader
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from datasets import load_dataset
 import math
-import random
 from tqdm import tqdm
 from torch.cuda.amp import autocast, GradScaler
+import secrets
 
 class CoTDataset(Dataset):
  def __init__(self, problems: List[str], solutions: List[str], cot_steps: List[str], tokenizer: GPT2Tokenizer, max_length: int = 512) -> None:
@@ -51,7 +51,7 @@ class StepwiseInternalization:
 
  def removal_smoothing(self) -> int:
   o: int = 0
-  while random.random() < math.exp(-self.lambda_smooth):
+  while secrets.SystemRandom().random() < math.exp(-self.lambda_smooth):
    o += 1
   return o
 
@@ -126,8 +126,8 @@ def create_multiplication_dataset(n_digits: int, num_examples: int) -> Tuple[Lis
  solutions: List[str] = []
  cot_steps: List[str] = []
  for _ in range(num_examples):
-  a: int = random.randint(10**(n_digits-1), 10**n_digits - 1)
-  b: int = random.randint(10**(n_digits-1), 10**n_digits - 1)
+  a: int = secrets.SystemRandom().randint(10**(n_digits-1), 10**n_digits - 1)
+  b: int = secrets.SystemRandom().randint(10**(n_digits-1), 10**n_digits - 1)
   problem: str = f"{a} * {b}"
   solution: str = str(a * b)
   
@@ -203,11 +203,11 @@ def main() -> None:
 
   if name.endswith('x'):
    size: int = int(name.split('x')[0])
-   a: int = random.randint(10**(size-1), 10**size - 1)
-   b: int = random.randint(10**(size-1), 10**size - 1)
+   a: int = secrets.SystemRandom().randint(10**(size-1), 10**size - 1)
+   b: int = secrets.SystemRandom().randint(10**(size-1), 10**size - 1)
    test_problem: str = f"{a} * {b}"
   else:
-   test_problem = random.choice(gsm8k_problems)
+   test_problem = secrets.choice(gsm8k_problems)
   result: str = trainer.inference(test_problem)
   print(f"Problem: {test_problem}")
   print(f"Model's solution: {result}")
